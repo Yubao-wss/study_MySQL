@@ -1,0 +1,58 @@
+JDBC(Java Database Connection)
+是为java开发者使用数据库提供了统一的编程接口，由一组java类和接口组成。
+是java程序与数据库系统通信的标准API，JDBC API 使得开发人员可以使用纯java的方式来实现连接数据库，并执行操作。
+
+数据库厂商想与java进行连接，必须自己实现JDBC这套接口
+数据库厂商的JDBC实现，我们就叫它此数据库的数据库驱动
+
+访问数据库的流程：
+加载JDBC驱动程序----->建立与数据库的链接----->发送SQL查询----->得到查询结果 
+
+JDBC常用接口
+
+   【Driver接口】
+由数据库厂家提供，对于java开发者而言，只需要使用Driver接口就可以了
+在编程中要连接数据库，必须先装载特定厂商的数据库驱动程序，不同的数据库有不同的装载方法
+驱动：就是各个数据库厂商实现的Sun公司提出的JDBC接口，即对Connection等接口的实现类的jar文件
+ 装载MySql驱动
+  Class.forName("com.mysql.jdbc.Driver");
+ 装载Oracle驱动
+  Class.forName("oracle.jdbc.driver.OracleDriver");
+    
+   【DriverManager接口】
+DriverManager是JDBC的管理层，作用于用户和驱动程序之间
+DriverManager跟踪可用的驱动程序，并在数据库和相应的驱动程序之间建立连接
+   
+   【Connection接口】
+Connection与特定数据库的连接（会话），在连接上下文中执行SQL语句并返回结果。
+DriverManager的getConnection()方法建立在JDBC URL中定义的数据库Connection连接上
+ 连接MySql数据库：
+  Connection con = DriverManager.getConnection("jdbc:mysql://host:port/database","user","password");
+ 连接Oracle数据库：
+  Connection con = DriverManager.getConnection("jdbc:oracle:thin:@host:port:databse","user","password");
+  
+   【Statement接口】
+ 用于执行静态SQL语句并返回它所生成结果的对象
+ 三种Statement类
+  Statement
+   由creatStatement创建，用于发送简单的SQL语句（不带参数的）
+  PreparedStatement
+   继承自Statement接口，由prepareStatement创建，用于发送含有一个或多个输入参数的sql语句
+   PreparedStatement对象比Statement对象的效率更高，并且可以防止SQL注入，一般都用PreparedStatement
+  CallableStatement
+   继承自PreparedStatement,由方法prePareCall创建，用于调用存储过程
+  常用的Statement方法
+   execute(): 运行语句，返回是否有结果集
+   executeQuery(): 运行select语句，返回ResultSet结果集
+   executeUpdate(): 运行insert/update/delete操作，返回更新的行数
+   
+   【ResultSet接口】
+ Statement执行SQL语句时返回ResultSet结果集
+ ResultSet提供的检索不同类型字段的方法，常用的有：
+   getString():获得在数据库里是varchar、char等数据类型的对象
+   getFloat():获得在数据库里是Float类型的对象
+   getDate():获得在数据库里面是Date类型的对象
+   getBoolean():获得在数据库里面是Boolean类型的数据
+ 
+ 依序关闭使用对象及连接
+   ResultSet--->Statement--->Connection（先建后关）
